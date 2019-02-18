@@ -1,43 +1,42 @@
 import os
-
 import csv
 
-csvpath = os.path.join("Assmt3-Python/PyBank/budget_data.csv")
+filename = input(""Assmt3-Python/PyPoll/election_data.csv"")
+total_votes = 0
+candidate = ""
+candidate_votes = {}
+candidate_percentages ={}
+winner_votes = 0
+winner = ""
 
-with open(budget_data, newline="") as csvfile:
+filepath = os.path.join("raw_data", filename)
+with open(filepath,'r', newline="") as csvfile:
     csvreader = csv.reader(csvfile, delimiter=",")
-    csv_header = next(csvfile)
-   
-    print(f"Header: {csv_header}")
 
-    P = []
-    months = []
+    next(csvreader)
 
+    for row in csvreader:
+        total_votes = total_votes + 1
+        candidate = row[2]
+        if candidate in candidate_votes:
+            candidate_votes[candidate] = candidate_votes[candidate] + 1
+        else:
+            candidate_votes[candidate] = 1
 
-    for rows in csvreader:
-        P.append(int(rows[1]))
-        months.append(rows[0])
+for person, vote_count in candidate_votes.items():
+    candidate_percentages[person] = '{0:.0%}'.format(vote_count / total_votes)
+    if vote_count > winner_votes:
+        winner_votes = vote_count
+        winner = person
 
+dashbreak = "-------------------------"
 
-    # find revenue change
-    revenue_change = []
-
-    for x in range(1, len(P)):
-        revenue_change.append((int(P[x]) - int(P[x-1])))
-
-    
-    revenue_average = sum(revenue_change) / len(revenue_change)
-
-    
-    total_months = len(months)
-
-    
-    greatest_increase = max(revenue_change)
-   
-    greatest_decrease = min(revenue_change)
-
-
-  
-print("Financial Analysis")
-
-
+print("Election Results")
+print(dashbreak)
+print(f"Total Votes: {total_votes}")
+print(dashbreak)
+for person, vote_count in candidate_votes.items():
+    print(f"{person}: {candidate_percentages[person]} ({vote_count})")
+print(dashbreak)
+print(f"Winner: {winner}")
+print(dashbreak)
